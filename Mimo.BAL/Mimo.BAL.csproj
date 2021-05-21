@@ -9,9 +9,4 @@
     <ProjectReference Include="..\Mimo.Model\Mimo.Model.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Abstractions\" />
-    <Folder Include="Concretes\" />
-  </ItemGroup>
-
 </Project>

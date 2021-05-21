@@ -1,19 +1,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Mimo.API.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Mimo.DAL.Abstractions;
+using Mimo.DAL.Concretes;
+using Mimo.DAL.Data;
 
 namespace Mimo.API
 {
@@ -30,9 +25,19 @@ namespace Mimo.API
         {
             services.AddControllers();
 
-            services.AddDbContext<MimoDbContext>(options => options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<MimoDbContext>(options => 
+                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepo, UserRepo>();
+
+            services.AddScoped<ILessonService, LessonService>();
+            services.AddScoped<ILessonRepo, LessonRepo>();
+
+            services.AddScoped<IAchievementService, AchievementService>();
+            services.AddScoped<IAchievementRepo, AchievementRepo>();
 
             services.AddSwaggerGen(c =>
             {

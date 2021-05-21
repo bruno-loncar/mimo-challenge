@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Mimo.API.Data;
+using Mimo.API;
+using Mimo.DAL.Data;
 
 namespace Mimo.API.Data.Migrations
 {
     [DbContext(typeof(MimoDbContext))]
-    [Migration("20210521110247_Achievements2")]
-    partial class Achievements2
+    [Migration("20210520181146_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,16 +31,19 @@ namespace Mimo.API.Data.Migrations
                     b.Property<int>("CompletionObject")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CourseId")
+                    b.Property<int?>("CompletionObjectId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("AchievementId");
 
-                    b.HasIndex("CourseId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Achievements");
                 });
@@ -137,30 +141,6 @@ namespace Mimo.API.Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Mimo.Model.Users.UserAchievement", b =>
-                {
-                    b.Property<int>("UserAchievementId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("AchievementId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CompletionDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("UserAchievementId");
-
-                    b.HasIndex("AchievementId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserAchievement");
-                });
-
             modelBuilder.Entity("Mimo.Model.Users.UserLesson", b =>
                 {
                     b.Property<int>("UserLessonId")
@@ -190,11 +170,9 @@ namespace Mimo.API.Data.Migrations
 
             modelBuilder.Entity("Mimo.Model.Achievements.Achievement", b =>
                 {
-                    b.HasOne("Mimo.Model.Courses.Course", "Course")
-                        .WithMany()
-                        .HasForeignKey("CourseId");
-
-                    b.Navigation("Course");
+                    b.HasOne("Mimo.Model.Courses.User", null)
+                        .WithMany("Achievements")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Mimo.Model.Courses.Chapter", b =>
@@ -219,25 +197,6 @@ namespace Mimo.API.Data.Migrations
                     b.Navigation("Chapter");
                 });
 
-            modelBuilder.Entity("Mimo.Model.Users.UserAchievement", b =>
-                {
-                    b.HasOne("Mimo.Model.Achievements.Achievement", "Achievement")
-                        .WithMany("UserAchievements")
-                        .HasForeignKey("AchievementId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Mimo.Model.Courses.User", "User")
-                        .WithMany("UserAchievements")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Achievement");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Mimo.Model.Users.UserLesson", b =>
                 {
                     b.HasOne("Mimo.Model.Courses.Lesson", "Lesson")
@@ -257,11 +216,6 @@ namespace Mimo.API.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Mimo.Model.Achievements.Achievement", b =>
-                {
-                    b.Navigation("UserAchievements");
-                });
-
             modelBuilder.Entity("Mimo.Model.Courses.Chapter", b =>
                 {
                     b.Navigation("Lessons");
@@ -279,7 +233,7 @@ namespace Mimo.API.Data.Migrations
 
             modelBuilder.Entity("Mimo.Model.Courses.User", b =>
                 {
-                    b.Navigation("UserAchievements");
+                    b.Navigation("Achievements");
 
                     b.Navigation("UserLessons");
                 });

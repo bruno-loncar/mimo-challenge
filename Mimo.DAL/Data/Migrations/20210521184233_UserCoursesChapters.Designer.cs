@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Mimo.API.Data;
+using Mimo.DAL.Data;
 
-namespace Mimo.API.Data.Migrations
+namespace Mimo.DAL.Data.Migrations
 {
     [DbContext(typeof(MimoDbContext))]
-    partial class MimoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210521184233_UserCoursesChapters")]
+    partial class UserCoursesChapters
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -159,6 +161,54 @@ namespace Mimo.API.Data.Migrations
                     b.ToTable("UserAchievement");
                 });
 
+            modelBuilder.Entity("Mimo.Model.Users.UserChapter", b =>
+                {
+                    b.Property<int>("UserChapterId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChapterId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CompletionDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UserChapterId");
+
+                    b.HasIndex("ChapterId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserChapter");
+                });
+
+            modelBuilder.Entity("Mimo.Model.Users.UserCourse", b =>
+                {
+                    b.Property<int>("UserCourseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CompletionDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UserCourseId");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserCourse");
+                });
+
             modelBuilder.Entity("Mimo.Model.Users.UserLesson", b =>
                 {
                     b.Property<int>("UserLessonId")
@@ -236,6 +286,44 @@ namespace Mimo.API.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Mimo.Model.Users.UserChapter", b =>
+                {
+                    b.HasOne("Mimo.Model.Courses.Chapter", "Chapter")
+                        .WithMany("UserChapters")
+                        .HasForeignKey("ChapterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Mimo.Model.Courses.User", "User")
+                        .WithMany("UserChapters")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chapter");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Mimo.Model.Users.UserCourse", b =>
+                {
+                    b.HasOne("Mimo.Model.Courses.Course", "Course")
+                        .WithMany("UserCourses")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Mimo.Model.Courses.User", "User")
+                        .WithMany("UserCourses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Mimo.Model.Users.UserLesson", b =>
                 {
                     b.HasOne("Mimo.Model.Courses.Lesson", "Lesson")
@@ -263,11 +351,15 @@ namespace Mimo.API.Data.Migrations
             modelBuilder.Entity("Mimo.Model.Courses.Chapter", b =>
                 {
                     b.Navigation("Lessons");
+
+                    b.Navigation("UserChapters");
                 });
 
             modelBuilder.Entity("Mimo.Model.Courses.Course", b =>
                 {
                     b.Navigation("Chapters");
+
+                    b.Navigation("UserCourses");
                 });
 
             modelBuilder.Entity("Mimo.Model.Courses.Lesson", b =>
@@ -278,6 +370,10 @@ namespace Mimo.API.Data.Migrations
             modelBuilder.Entity("Mimo.Model.Courses.User", b =>
                 {
                     b.Navigation("UserAchievements");
+
+                    b.Navigation("UserChapters");
+
+                    b.Navigation("UserCourses");
 
                     b.Navigation("UserLessons");
                 });

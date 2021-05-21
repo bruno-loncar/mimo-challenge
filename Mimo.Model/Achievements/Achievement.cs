@@ -11,6 +11,9 @@ namespace Mimo.Model.Achievements
 {
     public class Achievement
     {
+
+        #region Properties
+
         [Key]
         public int AchievementId { get; set; }
 
@@ -26,6 +29,27 @@ namespace Mimo.Model.Achievements
         public Course Course { get; set; }
 
         public virtual ICollection<UserAchievement> UserAchievements { get; set; }
+
+        #endregion
+
+        #region Overrides
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            return this.AchievementId == (obj as Achievement).AchievementId;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.AchievementId % 7;
+        }
+
+        #endregion
 
     }
 }

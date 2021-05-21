@@ -1,5 +1,4 @@
-﻿using Mimo.Model.Achievements;
-using Mimo.Model.Courses;
+﻿using Mimo.Model.Courses;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Mimo.Model.Users
 {
-    public class UserAchievement
+    public class UserCourse
     {
 
         #region Properties
 
         [Key]
-        public int UserAchievementId { get; set; }
+        public int UserCourseId { get; set; }
 
         [Required]
         public int UserId { get; set; }
@@ -23,10 +22,11 @@ namespace Mimo.Model.Users
         public User User { get; set; }
 
         [Required]
-        public int AchievementId { get; set; }
+        public int CourseId { get; set; }
 
-        public Achievement Achievement { get; set; }
+        public Course Course { get; set; }
 
+        [Required]
         public DateTime CompletionDate { get; set; }
 
         #endregion
@@ -40,15 +40,16 @@ namespace Mimo.Model.Users
                 return false;
             }
 
-            return this.UserAchievementId == (obj as UserAchievement).UserAchievementId;
+            return this.UserCourseId == (obj as UserCourse).UserCourseId;
         }
 
         public override int GetHashCode()
         {
-            return this.UserAchievementId % 7;
+            return this.UserCourseId % 7;
         }
 
         #endregion
+
 
     }
 }

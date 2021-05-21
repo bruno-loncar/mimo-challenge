@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Mimo.API.Data
+namespace Mimo.DAL.Data
 {
     public class MimoDbContext : DbContext
     {
@@ -22,11 +22,16 @@ namespace Mimo.API.Data
         public DbSet<Chapter> Chapters { get; set; }
         public DbSet<Lesson> Lesson { get; set; }
         public DbSet<Achievement> Achievements { get; set; }
+
         public DbSet<UserLesson> UserLessons { get; set; }
+        public DbSet<UserChapter> UserChapters { get; set; }
+        public DbSet<UserCourse> UserCourses { get; set; }
+        public DbSet<UserAchievement> UserAchievements { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Many to many - UserLesson (Lessions solved by user)
+            // Many to many - UserLesson (Lessions completed by user)
             modelBuilder.Entity<UserLesson>()
                 .HasOne(userLesson => userLesson.User)
                 .WithMany(user => user.UserLessons)
@@ -35,6 +40,26 @@ namespace Mimo.API.Data
                 .HasOne(userLesson => userLesson.Lesson)
                 .WithMany(lession => lession.UserLessons)
                 .HasForeignKey(userLesson => userLesson.LessonId);
+
+            // Many to many - UserChapter (Chapters completed by user)
+            modelBuilder.Entity<UserChapter>()
+                .HasOne(userChapter => userChapter.User)
+                .WithMany(user => user.UserChapters)
+                .HasForeignKey(userChapter => userChapter.UserId);
+            modelBuilder.Entity<UserChapter>()
+                .HasOne(userChapter => userChapter.Chapter)
+                .WithMany(chapter => chapter.UserChapters)
+                .HasForeignKey(userChapter => userChapter.ChapterId);
+
+            // Many to many - UserCourse (Courses completed by user)
+            modelBuilder.Entity<UserCourse>()
+                .HasOne(userCourse => userCourse.User)
+                .WithMany(user => user.UserCourses)
+                .HasForeignKey(userCourse => userCourse.UserId);
+            modelBuilder.Entity<UserCourse>()
+                .HasOne(userCourse => userCourse.Course)
+                .WithMany(course => course.UserCourses)
+                .HasForeignKey(userCourse => userCourse.CourseId);
 
             // Many to many - UserAchievement (Achievements completed by user)
             modelBuilder.Entity<UserAchievement>()

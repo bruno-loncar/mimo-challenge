@@ -7,6 +7,9 @@ namespace Mimo.Model.Courses
 {
     public class User
     {
+
+        #region Properties
+
         [Key]
         public int UserId { get; set; }
 
@@ -21,6 +24,32 @@ namespace Mimo.Model.Courses
 
         public virtual ICollection<UserLesson> UserLessons { get; set; }
 
+        public virtual ICollection<UserChapter> UserChapters { get; set; }
+
+        public virtual ICollection<UserCourse> UserCourses { get; set; }
+
         public virtual ICollection<UserAchievement> UserAchievements { get; set; }
+
+        #endregion
+
+        #region Overrides
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            return this.UserId == (obj as User).UserId;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.UserId % 7;
+        }
+
+        #endregion
+
     }
 }

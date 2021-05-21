@@ -9,8 +9,8 @@ namespace Mimo.Model.Achievements
 {
     public enum CompletionObject
     {
-        Lesson,
-        Chapter,
-        Course
+        Lesson = 1,
+        Chapter = 2,
+        Course = 3
     }
 }

@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Mimo.API.Data;
+using Mimo.DAL.Abstractions;
+using Mimo.DAL.Data;
 using Mimo.Model.Achievements;
+using Mimo.Model.Courses;
 using Mimo.Model.Courses.ViewModels;
 using Mimo.Model.Users;
 
@@ -16,11 +19,13 @@ namespace Mimo.API.Controllers
     [ApiController]
     public class MimoController : ControllerBase
     {
-        private readonly MimoDbContext _context;
+        private readonly ILessonService lessonService;
+        private readonly IAchievementService achievementService;
 
-        public MimoController(MimoDbContext context)
+        public MimoController(ILessonService lessonService, IAchievementService achievementService)
         {
-            _context = context;
+            this.lessonService = lessonService;
+            this.achievementService = achievementService;
         }
 
         [HttpPost("lesson")]
@@ -35,11 +40,25 @@ namespace Mimo.API.Controllers
                 UserId = userId
             };
 
-            var userLesson = await _context.UserLessons.AddAsync(userLessonToAdd);
-            await _context.SaveChangesAsync();
+            UserLesson userLesson = await lessonService.InsertUserLesson(userLessonToAdd);
+            userLesson.Lesson = null;
 
-            return StatusCode(StatusCodes.Status201Created);
+            return StatusCode(StatusCodes.Status201Created, userLesson);
         }
+
+        [HttpGet("chapters")]
+        public async Task<ActionResult<List<Chapter>>> GetChaptersForUser()
+        {
+            var chapters = await achievementService.GetAchievementForCourseCompleted(1);
+            return StatusCode(StatusCodes.Status200OK, chapters);
+        }
+
+        //[HttpGet("lessons")]
+        //public async Task<ActionResult<List<Lesson>>> GetLessonsForUser()
+        //{
+        //    var lessons = await lessonService.GetCompletedLessonsForUser(1);
+        //    return StatusCode(StatusCodes.Status200OK, lessons);
+        //}
 
         private int GetUserIdFromToken()
         {

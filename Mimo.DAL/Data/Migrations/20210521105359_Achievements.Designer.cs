@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Mimo.API.Data;
+using Mimo.DAL.Data;
 
 namespace Mimo.API.Data.Migrations
 {

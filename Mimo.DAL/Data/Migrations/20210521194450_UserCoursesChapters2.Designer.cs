@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Mimo.API;
+using Mimo.DAL.Data;
 
-namespace Mimo.API.Data.Migrations
+namespace Mimo.DAL.Data.Migrations
 {
     [DbContext(typeof(MimoDbContext))]
-    [Migration("20210520181146_Initial")]
-    partial class Initial
+    [Migration("20210521194450_UserCoursesChapters2")]
+    partial class UserCoursesChapters2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,19 +30,16 @@ namespace Mimo.API.Data.Migrations
                     b.Property<int>("CompletionObject")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CompletionObjectId")
+                    b.Property<int?>("CourseId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("AchievementId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("CourseId");
 
                     b.ToTable("Achievements");
                 });
@@ -140,6 +137,78 @@ namespace Mimo.API.Data.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Mimo.Model.Users.UserAchievement", b =>
+                {
+                    b.Property<int>("UserAchievementId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AchievementId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CompletionDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UserAchievementId");
+
+                    b.HasIndex("AchievementId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserAchievements");
+                });
+
+            modelBuilder.Entity("Mimo.Model.Users.UserChapter", b =>
+                {
+                    b.Property<int>("UserChapterId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChapterId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CompletionDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UserChapterId");
+
+                    b.HasIndex("ChapterId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserChapters");
+                });
+
+            modelBuilder.Entity("Mimo.Model.Users.UserCourse", b =>
+                {
+                    b.Property<int>("UserCourseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CompletionDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UserCourseId");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserCourses");
+                });
+
             modelBuilder.Entity("Mimo.Model.Users.UserLesson", b =>
                 {
                     b.Property<int>("UserLessonId")
@@ -169,9 +238,11 @@ namespace Mimo.API.Data.Migrations
 
             modelBuilder.Entity("Mimo.Model.Achievements.Achievement", b =>
                 {
-                    b.HasOne("Mimo.Model.Courses.User", null)
-                        .WithMany("Achievements")
-                        .HasForeignKey("UserId");
+                    b.HasOne("Mimo.Model.Courses.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId");
+
+                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("Mimo.Model.Courses.Chapter", b =>
@@ -196,6 +267,63 @@ namespace Mimo.API.Data.Migrations
                     b.Navigation("Chapter");
                 });
 
+            modelBuilder.Entity("Mimo.Model.Users.UserAchievement", b =>
+                {
+                    b.HasOne("Mimo.Model.Achievements.Achievement", "Achievement")
+                        .WithMany("UserAchievements")
+                        .HasForeignKey("AchievementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Mimo.Model.Courses.User", "User")
+                        .WithMany("UserAchievements")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Achievement");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Mimo.Model.Users.UserChapter", b =>
+                {
+                    b.HasOne("Mimo.Model.Courses.Chapter", "Chapter")
+                        .WithMany("UserChapters")
+                        .HasForeignKey("ChapterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Mimo.Model.Courses.User", "User")
+                        .WithMany("UserChapters")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chapter");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Mimo.Model.Users.UserCourse", b =>
+                {
+                    b.HasOne("Mimo.Model.Courses.Course", "Course")
+                        .WithMany("UserCourses")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Mimo.Model.Courses.User", "User")
+                        .WithMany("UserCourses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Mimo.Model.Users.UserLesson", b =>
                 {
                     b.HasOne("Mimo.Model.Courses.Lesson", "Lesson")
@@ -215,14 +343,23 @@ namespace Mimo.API.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Mimo.Model.Achievements.Achievement", b =>
+                {
+                    b.Navigation("UserAchievements");
+                });
+
             modelBuilder.Entity("Mimo.Model.Courses.Chapter", b =>
                 {
                     b.Navigation("Lessons");
+
+                    b.Navigation("UserChapters");
                 });
 
             modelBuilder.Entity("Mimo.Model.Courses.Course", b =>
                 {
                     b.Navigation("Chapters");
+
+                    b.Navigation("UserCourses");
                 });
 
             modelBuilder.Entity("Mimo.Model.Courses.Lesson", b =>
@@ -232,7 +369,11 @@ namespace Mimo.API.Data.Migrations
 
             modelBuilder.Entity("Mimo.Model.Courses.User", b =>
                 {
-                    b.Navigation("Achievements");
+                    b.Navigation("UserAchievements");
+
+                    b.Navigation("UserChapters");
+
+                    b.Navigation("UserCourses");
 
                     b.Navigation("UserLessons");
                 });
