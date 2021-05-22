@@ -63,8 +63,8 @@ namespace Mimo.DAL.Concretes
             Lesson lesson = await courseRepo.GetLesson(userLesson.LessonId);
             Chapter chapter = await courseRepo.GetChapter(lesson.ChapterId);
 
-            bool isLessonLastInChapter = await DidUserCompleteTheChapter(userId, chapter);
-            if (isLessonLastInChapter)
+            bool didUserCompleteTheChapter = await DidUserCompleteTheChapter(userId, chapter);
+            if (didUserCompleteTheChapter)
             {
                 await HandleChapterAchievement(userId, achievementsForUser, chapter);
             }
@@ -72,8 +72,8 @@ namespace Mimo.DAL.Concretes
             // Handling COURSE achievement
             Course course = await courseRepo.GetCourse(chapter.CourseId);
 
-            bool isChapterLastInCourse = await DidUserCompleteTheCourse(userId, course);
-            if (isLessonLastInChapter && isChapterLastInCourse)
+            bool didUserCompleteTheCourse = await DidUserCompleteTheCourse(userId, course);
+            if (didUserCompleteTheChapter && didUserCompleteTheCourse)
             {
                 await HandleCourseAchievement(userId, achievementsForUser, course);
             }

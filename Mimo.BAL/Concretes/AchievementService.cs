@@ -11,14 +11,25 @@ namespace Mimo.DAL.Concretes
 {
     public class AchievementService : IAchievementService
     {
+
+        #region Fields
+
         private readonly IAchievementRepo achievementRepo;
         private readonly ICourseRepo courseRepo;
+
+        #endregion
+
+        #region Constructors
 
         public AchievementService(IAchievementRepo achievementRepo, ICourseRepo courseRepo)
         {
             this.achievementRepo = achievementRepo;
             this.courseRepo = courseRepo;
         }
+
+        #endregion
+
+        #region Public methods
 
         public async Task<List<Achievement>> GetAchievementsForUser(int userId)
         {
@@ -63,17 +74,6 @@ namespace Mimo.DAL.Concretes
                 .ToList();
         }
 
-        private int GetAchievementProgressForUser(Achievement achievement, int lessonCount, int chapterCount, bool completed)
-        {
-            return achievement.CompletionObject switch
-            {
-                CompletionObject.Lesson => lessonCount,
-                CompletionObject.Chapter => chapterCount,
-                CompletionObject.Course => completed ? 1 : 0,
-                _ => 0,
-            };
-        }
-
         public async Task InsertUserAchievement(int userId, int achievementId)
         {
             var userAchievement = new UserAchievement()
@@ -100,6 +100,23 @@ namespace Mimo.DAL.Concretes
         {
             return await achievementRepo.GetAchievementForCourseCompleted(courseId);
         }
+
+        #endregion
+
+        #region Helpers
+
+        private int GetAchievementProgressForUser(Achievement achievement, int lessonCount, int chapterCount, bool completed)
+        {
+            return achievement.CompletionObject switch
+            {
+                CompletionObject.Lesson => lessonCount,
+                CompletionObject.Chapter => chapterCount,
+                CompletionObject.Course => completed ? 1 : 0,
+                _ => 0,
+            };
+        }
+
+        #endregion
 
     }
 }

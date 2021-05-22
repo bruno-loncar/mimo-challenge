@@ -27,7 +27,6 @@ namespace Mimo.DAL.Concretes
 
         #endregion
 
-
         #region Public methods
 
         public async Task<List<Achievement>> GetAchievementsForUser(int userId)
