@@ -81,19 +81,19 @@ ___
 
 
 ## Initial data
- - Users 
+ - Users  
 ![Users](https://i.ibb.co/L5vBZNr/users.png)
 
- - Courses 
+ - Courses  
 ![Courses](https://i.ibb.co/Sy4C5pG/courses.png)
  
  
 
- - Chapters
+ - Chapters  
 ![Chapters](https://i.ibb.co/cQ2FpsV/chapters.png)
 
- - Lessons
+ - Lessons  
  ![Lessons](https://i.ibb.co/sgy39Gj/lessons.png)
 
- - Achievements
- ![enter image description here](https://i.ibb.co/jh7fVcj/achievements.png)
+ - Achievements  
+ ![enter image description here](https://i.ibb.co/HPj7M7L/achievements.png)
