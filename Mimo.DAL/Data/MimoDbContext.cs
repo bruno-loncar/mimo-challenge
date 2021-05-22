@@ -2,17 +2,12 @@
 using Mimo.Model.Achievements;
 using Mimo.Model.Courses;
 using Mimo.Model.Users;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Mimo.DAL.Data
 {
     public class MimoDbContext : DbContext
     {
-        public MimoDbContext(DbContextOptions<MimoDbContext> options) 
+        public MimoDbContext(DbContextOptions<MimoDbContext> options)
             : base(options)
         {
         }

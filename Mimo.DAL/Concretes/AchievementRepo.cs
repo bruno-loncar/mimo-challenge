@@ -2,24 +2,33 @@
 using Mimo.DAL.Abstractions;
 using Mimo.DAL.Data;
 using Mimo.Model.Achievements;
-using Mimo.Model.Courses;
 using Mimo.Model.Users;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Mimo.DAL.Concretes
 {
     public class AchievementRepo : IAchievementRepo
     {
+
+        #region Fields
+
         private readonly MimoDbContext context;
+
+        #endregion
+
+        #region Constructors
 
         public AchievementRepo(MimoDbContext context)
         {
             this.context = context;
         }
+
+        #endregion
+
+
+        #region Public methods
 
         public async Task<List<Achievement>> GetAchievementsForUser(int userId)
         {
@@ -47,7 +56,7 @@ namespace Mimo.DAL.Concretes
         public async Task<Achievement> GetAchievementForLessonCount(int lessonCount)
         {
             return await (from a in context.Achievements
-                          where a.CompletionObject == CompletionObject.Lesson && 
+                          where a.CompletionObject == CompletionObject.Lesson &&
                                     a.AmountRequiredToComplete == lessonCount
                           select a)
               .FirstOrDefaultAsync();
@@ -56,7 +65,7 @@ namespace Mimo.DAL.Concretes
         public async Task<Achievement> GetAchievementForChapterCount(int chapterCount)
         {
             return await (from a in context.Achievements
-                          where a.CompletionObject == CompletionObject.Chapter && 
+                          where a.CompletionObject == CompletionObject.Chapter &&
                                     a.AmountRequiredToComplete == chapterCount
                           select a)
                 .FirstOrDefaultAsync();
@@ -71,6 +80,7 @@ namespace Mimo.DAL.Concretes
                 .FirstOrDefaultAsync();
         }
 
+        #endregion
 
     }
 }

@@ -3,10 +3,8 @@ using Mimo.DAL.Abstractions;
 using Mimo.DAL.Data;
 using Mimo.Model.Courses;
 using Mimo.Model.Users;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Mimo.DAL.Concretes
@@ -14,12 +12,20 @@ namespace Mimo.DAL.Concretes
     public class CourseRepo : ICourseRepo
     {
 
+        #region Fields
+
         private readonly MimoDbContext context;
+
+        #endregion
+
+        #region Constructors
 
         public CourseRepo(MimoDbContext context)
         {
             this.context = context;
         }
+
+        #endregion
 
 
         #region Lessions
@@ -47,10 +53,10 @@ namespace Mimo.DAL.Concretes
         public async Task<List<Lesson>> GetCompletedLessonsForUserDistinct(int userId)
         {
             return await (from ul in context.UserLessons
-                    join l in context.Lesson
-                      on ul.LessonId equals l.LessonId
-                    where ul.UserId == userId
-                    select l).Distinct().ToListAsync();
+                          join l in context.Lesson
+                            on ul.LessonId equals l.LessonId
+                          where ul.UserId == userId
+                          select l).Distinct().ToListAsync();
         }
 
         #endregion

@@ -1,13 +1,10 @@
 ﻿using Mimo.DAL.Abstractions;
-using Mimo.DAL.Data;
 using Mimo.Model.Achievements;
 using Mimo.Model.Achievements.ViewModels;
-using Mimo.Model.Courses;
 using Mimo.Model.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Mimo.DAL.Concretes
@@ -16,7 +13,6 @@ namespace Mimo.DAL.Concretes
     {
         private readonly IAchievementRepo achievementRepo;
         private readonly ICourseRepo courseRepo;
-        private readonly IUserRepo userRepo;
 
         public AchievementService(IAchievementRepo achievementRepo, ICourseRepo courseRepo)
         {
@@ -31,13 +27,13 @@ namespace Mimo.DAL.Concretes
 
         public async Task<List<AchievementCompletionVM>> GetAchievementCompletionForUser(int userId)
         {
-            List<AchievementCompletionVM> achievementCompletions = new List<AchievementCompletionVM>();
-
             List<Achievement> achievements = await achievementRepo.GetAllAchievements();
             List<Achievement> achievementsForUser = await achievementRepo.GetAchievementsForUser(userId);
 
             int userLessonCount = (await courseRepo.GetCompletedLessonsForUserDistinct(userId)).Count;
             int userChapterCount = (await courseRepo.GetCompletedChaptersForUser(userId)).Count;
+
+            List<AchievementCompletionVM> achievementCompletions = new List<AchievementCompletionVM>();
 
             // Handle COMPLETED achievements
             achievementCompletions.AddRange(
@@ -46,7 +42,7 @@ namespace Mimo.DAL.Concretes
                     AchievementId = achievement.AchievementId,
                     Name = achievement.Name,
                     Completed = true,
-                    Progress = GetAchievementProgressForUser(achievement, userLessonCount, userChapterCount, true)
+                    Progress = GetAchievementProgressForUser(achievement, userLessonCount, userChapterCount, true),
                 })
             );
 

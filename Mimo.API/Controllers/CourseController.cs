@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Mimo.API.Data;
+using Microsoft.Extensions.Logging;
 using Mimo.DAL.Abstractions;
-using Mimo.DAL.Data;
-using Mimo.Model.Achievements;
-using Mimo.Model.Courses;
+using Mimo.DAL.Concretes;
 using Mimo.Model.Courses.ViewModels;
 using Mimo.Model.Users;
+using System;
+using System.Threading.Tasks;
 
 namespace Mimo.API.Controllers
 {
@@ -19,52 +14,68 @@ namespace Mimo.API.Controllers
     [ApiController]
     public class CourseController : ControllerBase
     {
-        private readonly ICourseService lessonService;
-        private readonly IAchievementService achievementService;
 
-        public CourseController(ICourseService lessonService, IAchievementService achievementService)
+        #region Fields
+
+        private const string errorMessage = "An error has occured.";
+
+        private readonly ILogger<CourseController> logger;
+        private readonly ICourseService lessonService;
+
+        #endregion
+
+        #region Constructors
+
+        public CourseController(
+            ILogger<CourseController> logger,
+            ICourseService lessonService)
         {
+            this.logger = logger;
             this.lessonService = lessonService;
-            this.achievementService = achievementService;
         }
+
+        #endregion
+
+        #region Endpoints
 
         [HttpPost("lesson")]
         public async Task<ActionResult<int>> PostLesson([FromBody] PostLessonVM postLessonVM)
         {
-            var userId = GetUserIdFromToken();
-
-            var userLessonToAdd = new UserLesson()
+            try
             {
-                LessonId = postLessonVM.LessonId,
-                StartDate = postLessonVM.StartDate,
-                CompletionDate = postLessonVM.CompletionDate,
-                UserId = userId
-            };
+                var userId = GetUserIdFromToken();
 
-            UserLesson userLesson = await lessonService.InsertUserLesson(userLessonToAdd);
-            userLesson.Lesson = null;
+                var userLessonToAdd = new UserLesson()
+                {
+                    LessonId = postLessonVM.LessonId,
+                    StartDate = postLessonVM.StartDate,
+                    CompletionDate = postLessonVM.CompletionDate,
+                    UserId = userId
+                };
 
-            return StatusCode(StatusCodes.Status201Created, userLesson);
+                UserLesson userLesson = await lessonService.InsertUserLesson(userLessonToAdd);
+                userLesson.Lesson = null;
+
+                return StatusCode(StatusCodes.Status201Created, userLesson);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, errorMessage);
+                return StatusCode(StatusCodes.Status500InternalServerError, errorMessage);
+            }
         }
 
-        //[HttpGet("chapters")]
-        //public async Task<ActionResult<List<Chapter>>> GetChaptersForUser()
-        //{
-        //    var chapters = await achievementService.GetAchievementForCourseCompleted(1);
-        //    return StatusCode(StatusCodes.Status200OK, chapters);
-        //}
+        #endregion
 
-        //[HttpGet("lessons")]
-        //public async Task<ActionResult<List<Lesson>>> GetLessonsForUser()
-        //{
-        //    var lessons = await lessonService.GetCompletedLessonsForUser(1);
-        //    return StatusCode(StatusCodes.Status200OK, lessons);
-        //}
+        #region Helpers
 
         private int GetUserIdFromToken()
         {
             // TODO: Replace with Id from token
             return 1;
         }
+
+        #endregion
+
     }
 }

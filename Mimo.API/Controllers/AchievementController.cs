@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Mimo.DAL.Abstractions;
-using Mimo.Model.Achievements;
 using Mimo.Model.Achievements.ViewModels;
-using Mimo.Model.Users;
+using Mimo.Model.Courses;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Mimo.API.Controllers
 {
@@ -13,39 +14,47 @@ namespace Mimo.API.Controllers
     [ApiController]
     public class AchievementController : ControllerBase
     {
+
+        #region Fields
+
+        private const string errorMessage = "An error has occured.";
+
+        private readonly ILogger<AchievementController> logger;
         private readonly IAchievementService achievementService;
 
-        public AchievementController(IAchievementService achievementService)
+        #endregion
+
+        #region Constructors
+
+        public AchievementController(
+            ILogger<AchievementController> logger,
+            IAchievementService achievementService)
         {
+            this.logger = logger;
             this.achievementService = achievementService;
         }
 
-        //[HttpPost("lesson")]
-        //public async Task<ActionResult<int>> PostLesson([FromBody] PostLessonVM postLessonVM)
-        //{
-        //    var userId = GetUserIdFromToken();
+        #endregion
 
-        //    var userLessonToAdd = new UserLesson()
-        //    {
-        //        LessonId = postLessonVM.LessonId,
-        //        StartDate = postLessonVM.StartDate,
-        //        CompletionDate = postLessonVM.CompletionDate,
-        //        UserId = userId
-        //    };
-
-        //    UserLesson userLesson = await lessonService.InsertUserLesson(userLessonToAdd);
-        //    userLesson.Lesson = null;
-
-        //    return StatusCode(StatusCodes.Status201Created, userLesson);
-        //}
+        #region Endpoints
 
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<List<AchievementCompletionVM>>> GetAchievementsForUser(int userId)
         {
-            var chapters = await achievementService.GetAchievementCompletionForUser(userId);
-            return StatusCode(StatusCodes.Status200OK, chapters);
+            try
+            {
+                var chapters = await achievementService.GetAchievementCompletionForUser(userId);
+                return StatusCode(StatusCodes.Status200OK, chapters);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, errorMessage);
+                return StatusCode(StatusCodes.Status500InternalServerError, errorMessage);
+            }
+
         }
 
+        #endregion
 
     }
 }

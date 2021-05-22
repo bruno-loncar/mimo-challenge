@@ -1,5 +1,4 @@
-﻿using Mimo.Model.Achievements;
-using Mimo.Model.Users;
+﻿using Mimo.Model.Users;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 

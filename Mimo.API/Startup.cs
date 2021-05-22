@@ -25,13 +25,10 @@ namespace Mimo.API
         {
             services.AddControllers();
 
-            services.AddDbContext<MimoDbContext>(options => 
+            services.AddDbContext<MimoDbContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IUserRepo, UserRepo>();
 
             services.AddScoped<ICourseService, CourseService>();
             services.AddScoped<ICourseRepo, CourseRepo>();

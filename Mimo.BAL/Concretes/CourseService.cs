@@ -11,15 +11,26 @@ namespace Mimo.DAL.Concretes
 {
     public class CourseService : ICourseService
     {
+
+        #region Fields
+
         private readonly ICourseRepo courseRepo;
         private readonly IAchievementService achievementService;
 
-        public CourseService(ICourseRepo courseRepo, 
+        #endregion
+
+        #region Constructors
+
+        public CourseService(
+            ICourseRepo courseRepo,
             IAchievementService achievementService)
         {
             this.courseRepo = courseRepo;
             this.achievementService = achievementService;
         }
+
+        #endregion
+
 
         #region Public methods
 
@@ -33,7 +44,7 @@ namespace Mimo.DAL.Concretes
 
         #endregion
 
-        #region LessonAchievements
+        #region Achievement handlers
 
         private async Task HandleLessonAchievements(UserLesson userLesson)
         {
@@ -48,21 +59,19 @@ namespace Mimo.DAL.Concretes
                 await achievementService.InsertUserAchievement(userId, achievementForLessonCount.AchievementId);
             }
 
-
+            // Handling CHAPTER achievement
             Lesson lesson = await courseRepo.GetLesson(userLesson.LessonId);
             Chapter chapter = await courseRepo.GetChapter(lesson.ChapterId);
 
-            // Handling CHAPTER achievement
             bool isLessonLastInChapter = await DidUserCompleteTheChapter(userId, chapter);
             if (isLessonLastInChapter)
             {
                 await HandleChapterAchievement(userId, achievementsForUser, chapter);
             }
 
-
+            // Handling COURSE achievement
             Course course = await courseRepo.GetCourse(chapter.CourseId);
 
-            // Handling COURSE achievement
             bool isChapterLastInCourse = await DidUserCompleteTheCourse(userId, course);
             if (isLessonLastInChapter && isChapterLastInCourse)
             {
@@ -104,7 +113,7 @@ namespace Mimo.DAL.Concretes
 
         #region Helpers
 
-        public async Task InsertUserChapter(int userId, int chapterId)
+        private async Task InsertUserChapter(int userId, int chapterId)
         {
             var userChapter = new UserChapter()
             {
@@ -115,7 +124,7 @@ namespace Mimo.DAL.Concretes
             await courseRepo.InsertUserChapter(userChapter);
         }
 
-        public async Task InsertUserCourse(int userId, int courseId)
+        private async Task InsertUserCourse(int userId, int courseId)
         {
             var userCourse = new UserCourse()
             {

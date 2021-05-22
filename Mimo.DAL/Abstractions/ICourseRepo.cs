@@ -18,6 +18,7 @@ namespace Mimo.DAL.Abstractions
         #endregion
 
         #region Chapters
+
         Task<UserChapter> InsertUserChapter(UserChapter userChapter);
         Task<Chapter> GetChapter(int chapterId);
         Task<List<Chapter>> GetChaptersForCourse(int courseId);
