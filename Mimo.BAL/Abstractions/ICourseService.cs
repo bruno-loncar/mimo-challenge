@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Mimo.DAL.Abstractions
 {
-    public interface ILessonService
+    public interface ICourseService
     {
         Task<UserLesson> InsertUserLesson(UserLesson userLesson);
 

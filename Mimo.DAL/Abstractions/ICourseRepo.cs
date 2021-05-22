@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Mimo.DAL.Abstractions
 {
-    public interface ILessonRepo
+    public interface ICourseRepo
     {
 
         #region Lessions
@@ -13,7 +13,7 @@ namespace Mimo.DAL.Abstractions
         Task<UserLesson> InsertUserLesson(UserLesson userLesson);
         Task<Lesson> GetLesson(int lessonId);
         Task<List<Lesson>> GetLessonsForChapter(int chapterId);
-        Task<List<Lesson>> GetLessonsForUser(int userId);
+        Task<List<Lesson>> GetCompletedLessonsForUserDistinct(int userId);
 
         #endregion
 

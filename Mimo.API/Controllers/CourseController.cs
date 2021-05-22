@@ -17,12 +17,12 @@ namespace Mimo.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MimoController : ControllerBase
+    public class CourseController : ControllerBase
     {
-        private readonly ILessonService lessonService;
+        private readonly ICourseService lessonService;
         private readonly IAchievementService achievementService;
 
-        public MimoController(ILessonService lessonService, IAchievementService achievementService)
+        public CourseController(ICourseService lessonService, IAchievementService achievementService)
         {
             this.lessonService = lessonService;
             this.achievementService = achievementService;
@@ -33,7 +33,8 @@ namespace Mimo.API.Controllers
         {
             var userId = GetUserIdFromToken();
 
-            var userLessonToAdd = new UserLesson() {
+            var userLessonToAdd = new UserLesson()
+            {
                 LessonId = postLessonVM.LessonId,
                 StartDate = postLessonVM.StartDate,
                 CompletionDate = postLessonVM.CompletionDate,
@@ -46,12 +47,12 @@ namespace Mimo.API.Controllers
             return StatusCode(StatusCodes.Status201Created, userLesson);
         }
 
-        [HttpGet("chapters")]
-        public async Task<ActionResult<List<Chapter>>> GetChaptersForUser()
-        {
-            var chapters = await achievementService.GetAchievementForCourseCompleted(1);
-            return StatusCode(StatusCodes.Status200OK, chapters);
-        }
+        //[HttpGet("chapters")]
+        //public async Task<ActionResult<List<Chapter>>> GetChaptersForUser()
+        //{
+        //    var chapters = await achievementService.GetAchievementForCourseCompleted(1);
+        //    return StatusCode(StatusCodes.Status200OK, chapters);
+        //}
 
         //[HttpGet("lessons")]
         //public async Task<ActionResult<List<Lesson>>> GetLessonsForUser()

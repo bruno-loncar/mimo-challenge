@@ -37,6 +37,13 @@ namespace Mimo.DAL.Concretes
             await context.SaveChangesAsync();
         }
 
+        public async Task<List<Achievement>> GetAllAchievements()
+        {
+            return await context.Achievements
+                .OrderBy(achievement => achievement.AchievementId)
+                .ToListAsync();
+        }
+
         public async Task<Achievement> GetAchievementForLessonCount(int lessonCount)
         {
             return await (from a in context.Achievements

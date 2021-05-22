@@ -33,11 +33,13 @@ namespace Mimo.API
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepo, UserRepo>();
 
-            services.AddScoped<ILessonService, LessonService>();
-            services.AddScoped<ILessonRepo, LessonRepo>();
+            services.AddScoped<ICourseService, CourseService>();
+            services.AddScoped<ICourseRepo, CourseRepo>();
 
             services.AddScoped<IAchievementService, AchievementService>();
             services.AddScoped<IAchievementRepo, AchievementRepo>();
+
+            services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddSwaggerGen(c =>
             {

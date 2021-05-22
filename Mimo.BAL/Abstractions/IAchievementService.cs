@@ -1,4 +1,5 @@
 ﻿using Mimo.Model.Achievements;
+using Mimo.Model.Achievements.ViewModels;
 using Mimo.Model.Courses;
 using Mimo.Model.Users;
 using System.Collections.Generic;
@@ -8,9 +9,9 @@ namespace Mimo.DAL.Abstractions
 {
     public interface IAchievementService
     {
-        Task CheckForAchievementsUpdate(UserLesson userLesson);
-        Task<List<Achievement>> GetAchievementsForUser(int userId);
         Task InsertUserAchievement(int userId, int achievementId);
+        Task<List<Achievement>> GetAchievementsForUser(int userId);
+        Task<List<AchievementCompletionVM>> GetAchievementCompletionForUser(int userId);
 
         Task<Achievement> GetAchievementForLessonCount(int lessonCount);
         Task<Achievement> GetAchievementForChapterCount(int chapterCount);

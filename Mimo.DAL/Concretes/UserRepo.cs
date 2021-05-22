@@ -27,5 +27,15 @@ namespace Mimo.DAL.Concretes
             return await context.Users.FindAsync(userId);
         }
 
+        public async Task<int> GetUserLessonCount(int userId)
+        {
+            return (await context.UserLessons.Where(ul => ul.UserId == userId).Distinct().ToListAsync()).Count;
+        }
+
+        public async Task<int> GetUserChapterCount(int userId)
+        {
+            return (await context.UserChapters.Where(uc => uc.UserId == userId).Distinct().ToListAsync()).Count;
+        }
+
     }
 }

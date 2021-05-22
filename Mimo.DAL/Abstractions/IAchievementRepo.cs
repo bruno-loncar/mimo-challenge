@@ -9,6 +9,9 @@ namespace Mimo.DAL.Abstractions
     {
         Task<List<Achievement>> GetAchievementsForUser(int userId);
         Task InsertUserAchievement(UserAchievement userAchievement);
+
+        Task<List<Achievement>> GetAllAchievements();
+
         Task<Achievement> GetAchievementForLessonCount(int lessonCount);
         Task<Achievement> GetAchievementForChapterCount(int chapterCount);
         Task<Achievement> GetAchievementForCourseCompleted(int courseId);

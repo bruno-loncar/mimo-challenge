@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace Mimo.DAL.Concretes
 {
-    public class LessonRepo : ILessonRepo
+    public class CourseRepo : ICourseRepo
     {
 
         private readonly MimoDbContext context;
 
-        public LessonRepo(MimoDbContext context)
+        public CourseRepo(MimoDbContext context)
         {
             this.context = context;
         }
@@ -44,7 +44,7 @@ namespace Mimo.DAL.Concretes
                 .ToListAsync();
         }
 
-        public async Task<List<Lesson>> GetLessonsForUser(int userId)
+        public async Task<List<Lesson>> GetCompletedLessonsForUserDistinct(int userId)
         {
             return await (from ul in context.UserLessons
                     join l in context.Lesson
